@@ -46,6 +46,8 @@ class _FiltersScreenState extends State<FiltersScreen> {
         title: Text("Filters"),
         actions: [
           IconButton(
+            alignment: Alignment.center,
+            iconSize: 30,
             icon: Icon(Icons.save),
             onPressed: () => widget._saveFilters({
               'vegan': _vegan,
@@ -54,6 +56,9 @@ class _FiltersScreenState extends State<FiltersScreen> {
               'lactose': _lactoseFree,
             }),
           ),
+          SizedBox(
+            width: 10,
+          )
         ],
       ),
       drawer: MainDrawer(),

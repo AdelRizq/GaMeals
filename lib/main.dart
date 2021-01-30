@@ -80,7 +80,9 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'GaMeals',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        // rgb(240,145,51)
         primarySwatch: Colors.pink,
         accentColor: Colors.amber,
         canvasColor: Color.fromRGBO(253, 246, 197, 1),
