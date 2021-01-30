@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 
 import '../widgets/meal_item.dart';
 
-import '../dummy_data.dart';
 import '../models/meal.dart';
 
 class CategoryMealsScreen extends StatefulWidget {
   static final routeName = '/category-meals';
+
+  List<Meal> _meals;
+  final Function _deleteMeal;
+  CategoryMealsScreen(this._meals, this._deleteMeal);
 
   @override
   _CategoryMealsScreenState createState() => _CategoryMealsScreenState();
@@ -26,7 +29,7 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
 
       final String categoryId = routeArgs['id'];
       categoryTitle = routeArgs['title'];
-      categoryMeals = DUMMY_MEALS.where((meal) {
+      categoryMeals = widget._meals.where((meal) {
         return meal.categories.contains(categoryId);
       }).toList();
 
@@ -34,11 +37,11 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
     }
   }
 
-  void deleteMeal(String id) {
-    setState(() {
-      categoryMeals.removeWhere((meal) => meal.id == id);
-    });
-  }
+  // void deleteMeal(String id) {
+  //   setState(() {
+  //     categoryMeals.removeWhere((meal) => meal.id == id);
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +58,7 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
             duration: categoryMeals[index].duration,
             complexity: categoryMeals[index].complexity,
             affordability: categoryMeals[index].affordability,
-            deleteMeal: deleteMeal,
+            deleteMeal: widget._deleteMeal,
           );
         },
         itemCount: categoryMeals.length,

@@ -28,9 +28,10 @@ class MealItem extends StatelessWidget {
       MealDetailsScreen.routeName,
       arguments: id,
     )
-        .then((value) {
-      if (value != null) {
-        deleteMeal(value);
+        .then((mealId) {
+      if (mealId != null) {
+        deleteMeal(mealId);
+        Navigator.of(ctx).pushReplacementNamed('/');
       }
     });
   }

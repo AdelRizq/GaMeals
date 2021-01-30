@@ -1,3 +1,4 @@
+import 'package:GaMeals/dummy_data.dart';
 import 'package:flutter/material.dart';
 
 import './screens/tabs_screen.dart';
@@ -6,11 +7,68 @@ import './screens/categories_screen.dart';
 import './screens/meal_details_screen.dart';
 import './screens/category_meals_screen.dart';
 
+import './models/meal.dart';
+
 void main() {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  List<String> favoritedMealsIds = [];
+  List<Meal> filteredMeals = DUMMY_MEALS.toList();
+
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  Map<String, bool> filters = {
+    'vegan': false,
+    'vegetarian': false,
+    'gluten': false,
+    'lactose': false,
+  };
+
+  void saveFilters(Map<String, bool> newFilters) {
+    setState(() {
+      filters = newFilters;
+      // print(filters);
+      widget.filteredMeals = DUMMY_MEALS.where((meal) {
+        if ((filters['vegan'] && !meal.isVegan) ||
+            (filters['vegetarian'] && !meal.isVegetarian) ||
+            (filters['gluten'] && !meal.isGlutenFree) ||
+            (filters['lactose'] && !meal.isLactoseFree)) return false;
+        return true;
+      }).toList();
+      // TODO: Update favortied meals
+    });
+  }
+
+  void _toggleFavorite(String id) {
+    int index = widget.favoritedMealsIds.indexWhere((mealId) => mealId == id);
+    if (index >= 0) {
+      setState(() {
+        widget.favoritedMealsIds.removeAt(index);
+      });
+    } else {
+      setState(() {
+        widget.favoritedMealsIds
+            .add(widget.filteredMeals.firstWhere((meal) => meal.id == id).id);
+      });
+    }
+  }
+
+  bool _isFavorite(String id) {
+    return widget.favoritedMealsIds.any((mealId) => mealId == id);
+  }
+
+  void _deleteMeal(String id) {
+    setState(() {
+      widget.filteredMeals.removeWhere((meal) => meal.id == id);
+      widget.favoritedMealsIds.removeWhere((mealId) => mealId == id);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -36,11 +94,13 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       routes: {
-        '/': (_) => TabsScreen(),
+        '/': (_) => TabsScreen(widget.favoritedMealsIds, _deleteMeal),
         CategoriesScreen.routeName: (_) => CategoriesScreen(),
-        CategoryMealsScreen.routeName: (_) => CategoryMealsScreen(),
-        MealDetailsScreen.routeName: (_) => MealDetailsScreen(),
-        FiltersScreen.routeName: (_) => FiltersScreen(),
+        MealDetailsScreen.routeName: (_) =>
+            MealDetailsScreen(_toggleFavorite, _isFavorite),
+        FiltersScreen.routeName: (_) => FiltersScreen(filters, saveFilters),
+        CategoryMealsScreen.routeName: (_) =>
+            CategoryMealsScreen(widget.filteredMeals, _deleteMeal),
       },
     );
   }

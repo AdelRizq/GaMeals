@@ -6,21 +6,32 @@ import './favorites_screen.dart';
 import './categories_screen.dart';
 
 class TabsScreen extends StatefulWidget {
+  final List<String> _favoritedMeals;
+  final Function _deleteMeal;
+
+  TabsScreen(this._favoritedMeals, this._deleteMeal);
+
   @override
   _TabsScreenState createState() => _TabsScreenState();
 }
 
 class _TabsScreenState extends State<TabsScreen> {
-  final List<Map<String, Object>> _screens = [
-    {
-      'body': CategoriesScreen(),
-      'title': 'Categories',
-    },
-    {
-      'body': FavoritesScreen(),
-      'title': 'Favorites',
-    },
-  ];
+  List<Map<String, Object>> _screens;
+
+  @override
+  void initState() {
+    super.initState();
+    _screens = [
+      {
+        'body': CategoriesScreen(),
+        'title': 'Categories',
+      },
+      {
+        'body': FavoritesScreen(widget._favoritedMeals, widget._deleteMeal),
+        'title': 'Favorites',
+      },
+    ];
+  }
 
   int screenIndex = 0;
 
