@@ -37,12 +37,6 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
     }
   }
 
-  // void deleteMeal(String id) {
-  //   setState(() {
-  //     categoryMeals.removeWhere((meal) => meal.id == id);
-  //   });
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

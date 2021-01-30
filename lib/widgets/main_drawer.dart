@@ -9,13 +9,7 @@ class MainDrawer extends StatelessWidget {
         size: 26,
         color: Theme.of(ctx).primaryColor,
       ),
-      title: Text(
-        title,
-        style: TextStyle(
-          fontSize: 24,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
+      title: Text(title, style: Theme.of(ctx).textTheme.headline6),
       onTap: tapHandler,
     );
   }
@@ -44,13 +38,13 @@ class MainDrawer extends StatelessWidget {
           ),
           buildListTile(
             context,
-            'Meals',
+            'Categories',
             Icons.restaurant,
             () => Navigator.pushReplacementNamed(context, '/'),
           ),
           buildListTile(
             context,
-            'Filters',
+            'Settings',
             Icons.settings,
             () => Navigator.pushReplacementNamed(context, '/filters'),
           ),

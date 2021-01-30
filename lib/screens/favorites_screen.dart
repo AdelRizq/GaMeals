@@ -21,7 +21,10 @@ class FavoritesScreen extends StatelessWidget {
 
     return _favoritedMealsIds.isEmpty
         ? Center(
-            child: Text("Favorites"),
+            child: Text(
+              "No favorites yet",
+              style: Theme.of(context).textTheme.headline6,
+            ),
           )
         : ListView.builder(
             itemBuilder: (ctx, index) {

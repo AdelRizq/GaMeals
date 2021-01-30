@@ -2,7 +2,7 @@ import 'package:GaMeals/dummy_data.dart';
 import 'package:flutter/material.dart';
 
 import './screens/tabs_screen.dart';
-import './screens/filters_screen.dart';
+import 'screens/settings_screen.dart';
 import './screens/categories_screen.dart';
 import './screens/meal_details_screen.dart';
 import './screens/category_meals_screen.dart';
@@ -14,15 +14,13 @@ void main() {
 }
 
 class MyApp extends StatefulWidget {
+  bool isDarkTheme = false;
+
   List<String> favoritedMealsIds = [];
   List<Meal> existedMeals = DUMMY_MEALS.toList();
 
   List<Meal> filteredMeals;
-  @override
-  _MyAppState createState() => _MyAppState();
-}
 
-class _MyAppState extends State<MyApp> {
   Map<String, bool> filters = {
     'vegan': false,
     'vegetarian': false,
@@ -30,6 +28,31 @@ class _MyAppState extends State<MyApp> {
     'lactose': false,
   };
 
+  static final Map<String, Object> lightTheme = {
+    'primary': Colors.pink,
+    'accent': Colors.amber[400],
+    'canvas': Color.fromRGBO(253, 246, 197, 1),
+    'bodyText': Color.fromRGBO(253, 246, 197, 1),
+    'headline6': Color.fromRGBO(60, 63, 66, 1),
+    'headline4': Color.fromRGBO(90, 93, 96, 1),
+  };
+
+  static final Map<String, Object> darkTheme = {
+    'primary': Colors.pink,
+    'accent': Colors.amber[100],
+    'canvas': Color.fromRGBO(50, 53, 56, 1),
+    'bodyText': Color.fromRGBO(50, 53, 56, 1),
+    'headline6': Color.fromRGBO(253, 246, 197, 1),
+    'headline4': Color.fromRGBO(253, 246, 197, 1),
+  };
+
+  Map<String, Object> currentTheme = lightTheme;
+
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
@@ -38,15 +61,26 @@ class _MyAppState extends State<MyApp> {
 
   void saveFilters(Map<String, bool> newFilters) {
     setState(() {
-      filters = newFilters;
+      widget.filters = newFilters;
       widget.filteredMeals = widget.existedMeals.where((meal) {
-        if ((filters['vegan'] && !meal.isVegan) ||
-            (filters['vegetarian'] && !meal.isVegetarian) ||
-            (filters['gluten'] && !meal.isGlutenFree) ||
-            (filters['lactose'] && !meal.isLactoseFree)) return false;
+        if ((widget.filters['vegan'] && !meal.isVegan) ||
+            (widget.filters['vegetarian'] && !meal.isVegetarian) ||
+            (widget.filters['gluten'] && !meal.isGlutenFree) ||
+            (widget.filters['lactose'] && !meal.isLactoseFree)) return false;
         return true;
       }).toList();
       // TODO: Update favortied meals
+    });
+  }
+
+  void switchTheme(bool isDarkTheme) {
+    setState(() {
+      widget.isDarkTheme = isDarkTheme;
+      if (isDarkTheme == false) {
+        widget.currentTheme = MyApp.lightTheme;
+      } else {
+        widget.currentTheme = MyApp.darkTheme;
+      }
     });
   }
 
@@ -82,22 +116,26 @@ class _MyAppState extends State<MyApp> {
       title: 'GaMeals',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        // rgb(240,145,51)
-        primarySwatch: Colors.pink,
-        accentColor: Colors.amber,
-        canvasColor: Color.fromRGBO(253, 246, 197, 1),
+        primarySwatch: widget.currentTheme['primary'],
+        accentColor: widget.currentTheme['accent'],
+        canvasColor: widget.currentTheme['canvas'],
         fontFamily: 'Raleway',
         textTheme: ThemeData.light().textTheme.copyWith(
               bodyText1: TextStyle(
-                color: Color.fromRGBO(20, 50, 50, 1),
-              ),
-              bodyText2: TextStyle(
-                color: Color.fromRGBO(20, 50, 50, 1),
+                fontSize: 20,
+                // fontWeight: FontWeight.bold,
+                color: widget.currentTheme['bodyText'],
               ),
               headline6: TextStyle(
                 fontSize: 20,
                 fontFamily: 'RobotoCondensed',
                 fontWeight: FontWeight.bold,
+                color: widget.currentTheme['headline6'],
+              ),
+              headline4: TextStyle(
+                fontSize: 14,
+                fontFamily: 'RobotoCondensed',
+                color: widget.currentTheme['headline4'],
               ),
             ),
         visualDensity: VisualDensity.adaptivePlatformDensity,
@@ -107,7 +145,8 @@ class _MyAppState extends State<MyApp> {
         CategoriesScreen.routeName: (_) => CategoriesScreen(),
         MealDetailsScreen.routeName: (_) =>
             MealDetailsScreen(_toggleFavorite, _isFavorite),
-        FiltersScreen.routeName: (_) => FiltersScreen(filters, saveFilters),
+        SettingScreen.routeName: (_) => SettingScreen(
+            widget.filters, saveFilters, widget.isDarkTheme, switchTheme),
         CategoryMealsScreen.routeName: (_) =>
             CategoryMealsScreen(widget.filteredMeals, _deleteMeal),
       },
