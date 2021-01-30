@@ -1,8 +1,10 @@
-import 'package:GaMeals/screens/meal_details_screen.dart';
 import 'package:flutter/material.dart';
 
-import './screens/category_meals_screen.dart';
+import './screens/tabs_screen.dart';
+import './screens/filters_screen.dart';
 import './screens/categories_screen.dart';
+import './screens/meal_details_screen.dart';
+import './screens/category_meals_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -34,9 +36,11 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       routes: {
-        '/': (_) => CategoriesScreen(),
+        '/': (_) => TabsScreen(),
+        CategoriesScreen.routeName: (_) => CategoriesScreen(),
         CategoryMealsScreen.routeName: (_) => CategoryMealsScreen(),
         MealDetailsScreen.routeName: (_) => MealDetailsScreen(),
+        FiltersScreen.routeName: (_) => FiltersScreen(),
       },
     );
   }
