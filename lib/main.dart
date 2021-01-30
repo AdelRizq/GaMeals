@@ -15,8 +15,9 @@ void main() {
 
 class MyApp extends StatefulWidget {
   List<String> favoritedMealsIds = [];
-  List<Meal> filteredMeals = DUMMY_MEALS.toList();
+  List<Meal> existedMeals = DUMMY_MEALS.toList();
 
+  List<Meal> filteredMeals;
   @override
   _MyAppState createState() => _MyAppState();
 }
@@ -29,11 +30,16 @@ class _MyAppState extends State<MyApp> {
     'lactose': false,
   };
 
+  @override
+  void initState() {
+    super.initState();
+    widget.filteredMeals = widget.existedMeals;
+  }
+
   void saveFilters(Map<String, bool> newFilters) {
     setState(() {
       filters = newFilters;
-      // print(filters);
-      widget.filteredMeals = DUMMY_MEALS.where((meal) {
+      widget.filteredMeals = widget.existedMeals.where((meal) {
         if ((filters['vegan'] && !meal.isVegan) ||
             (filters['vegetarian'] && !meal.isVegetarian) ||
             (filters['gluten'] && !meal.isGlutenFree) ||
@@ -64,6 +70,7 @@ class _MyAppState extends State<MyApp> {
 
   void _deleteMeal(String id) {
     setState(() {
+      widget.existedMeals.removeWhere((meal) => meal.id == id);
       widget.filteredMeals.removeWhere((meal) => meal.id == id);
       widget.favoritedMealsIds.removeWhere((mealId) => mealId == id);
     });
